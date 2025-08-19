@@ -1,15 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
 
-// Create context
 const AuthContext = createContext();
 
-// Provider component
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // null = not logged in
+  const [user, setUser] = useState(null);
 
   const login = (email, password) => {
-    // Here you could call an API, validate credentials, etc.
-    // For now, we mock login:
     setUser({ email });
   };
 
@@ -18,7 +15,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = (name, email, password) => {
-    // Call register API or save locally
     setUser({ name, email });
   };
 
@@ -29,5 +25,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use Auth
 export const useAuth = () => useContext(AuthContext);

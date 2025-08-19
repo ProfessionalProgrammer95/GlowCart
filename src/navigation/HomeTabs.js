@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Wishlist from '../screens/Wishlist';
 
-// Import your screens
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 
-// Placeholder screens for Offers & Wishlist
+
 import { View, Text } from 'react-native';
 
 function Placeholder({ label }) {
@@ -24,12 +24,13 @@ export default function HomeTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#B56576',
+        tabBarActiveTintColor: '#B84953',
         tabBarInactiveTintColor: '#8B8B8B',
         tabBarStyle: {
           backgroundColor: '#fff',
           borderTopColor: '#eee',
-          height: 60,
+          height: 65,
+          paddingTop:6,
           paddingBottom: 6,
         },
         tabBarIcon: ({ color, size, focused }) => {
@@ -43,14 +44,23 @@ export default function HomeTabs() {
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
-          return <Ionicons name={iconName} size={22} color={color} />;
+          return <Ionicons name={iconName} size={30} color={color} />;
         },
       })}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Offers" children={() => <Placeholder label="Offers" />} />
-      <Tab.Screen name="Wishlist" children={() => <Placeholder label="Wishlist" />} />
-      <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen
+        name="Wishlist"
+        component={Wishlist}
+        options={{
+            tabBarLabel: 'Wishlist',
+            tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'heart' : 'heart-outline'} size={size} color={color} />
+            ),
+        }}
+        />      
+        <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }

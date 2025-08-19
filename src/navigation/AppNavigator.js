@@ -6,6 +6,7 @@ import Login from '../screens/Login';
 import Register from '../screens/Register';
 import HomeTabs from './HomeTabs';
 import ProductDetails from '../screens/ProductDetails';
+import ProfileScreen from '../screens/Profile';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,8 @@ export default function AppNavigator() {
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
         <Stack.Screen name="ProductDetails" component={ProductDetails}  options={{ headerShown: false }}/>
+        <Stack.Screen name="Profile" component={ProfileScreen}  options={{ headerShown: false }}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );

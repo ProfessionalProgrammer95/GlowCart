@@ -1,5 +1,4 @@
-// src/screens/Onboarding.js
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,100 +8,135 @@ import {
   TouchableOpacity,
   Platform,
   Dimensions,
+    Animated,
 } from 'react-native';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function Onboarding({ navigation }) {
+
+     const progress = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Animate progress bar on mount
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 3000,   // 3 seconds for loading
+      useNativeDriver: false,
+    }).start(() => {
+      // after progress completes, you can auto-navigate OR reset
+      // navigation.navigate('Login');
+    });
+  }, []);
+
+  const barWidth = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'], // fill range
+  });
+
   return (
     <View style={styles.root}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      <ImageBackground
-        source={require('../../assets/onboarding-bg.png')} // <-- replace this image file
-        resizeMode="cover"
-        style={styles.bg}
-      >
-        {/* Subtle dark-to-transparent overlay to improve text contrast */}
-        <View style={styles.overlay} />
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-        {/* Bottom content block */}
-        <View style={styles.bottomBlock}>
-          <Text style={styles.brand}>Viorra</Text>
-          <Text style={styles.tagline}>Your Beauty, Delivered.</Text>
+      <View style={styles.imageWrap}>
+        <ImageBackground
+          source={require('../assets/onboarding-bg.png')}
+          resizeMode="cover"
+          style={styles.bg}
+        />
+      </View>
 
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => navigation.navigate('Login')}
-            style={styles.cta}
-          >
-            <Text style={styles.ctaText}>Get Started</Text>
-          </TouchableOpacity>
+      <View style={styles.bottomBlock}>
+        <Text style={styles.brand}>Viorra</Text>
+        <Text style={styles.tagline}>Your Beauty, Delivered.</Text>
 
-          {/* iOS-style home indicator bar */}
-          <View style={styles.homeIndicator} />
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('Login')}
+          style={styles.cta}
+        >
+          <Text style={styles.ctaText}>Get Started</Text>
+        </TouchableOpacity>
+
+        <View style={styles.pager}>
+          <Animated.View style={[styles.progress, { width: barWidth }]} />
         </View>
-      </ImageBackground>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#d9b7b9' }, 
-  bg: { flex: 1, justifyContent: 'flex-end' },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.18)', 
+  root: { flex: 1, backgroundColor: '#F2D7D7' },
+
+
+  imageWrap: {
+    height: height * 0.73,
+    width: '100%',
   },
+  bg: { flex: 1 },
+
 
   bottomBlock: {
-    paddingHorizontal: 28,
-    paddingBottom: Platform.select({ ios: 24, android: 28 }),
+    flex: 1,
+    backgroundColor: '#e3c2ba',
     alignItems: 'center',
-    minHeight: height * 0.34,
-    justifyContent: 'flex-end',
-    gap: 14,
+    justifyContent: 'flex-start',
+    paddingHorizontal: 24,
+    paddingTop: 1,                                
+    paddingBottom: Platform.select({ ios: 26, android: 32 }),
   },
 
   brand: {
     color: '#ffffff',
-    fontSize: 36,
-    lineHeight: 42,
-    fontWeight: '600',
-    letterSpacing: 1,
+    fontSize: 60,
+    fontWeight: '400',
+    fontStyle: 'italic',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+   marginTop:-65,
   },
   tagline: {
-    color: '#f7f2f2',
-    fontSize: 14,
-    lineHeight: 18,
-    marginTop: -4,
-    marginBottom: 6,
+    color: '#fff',
+    opacity: 0.9,
+    fontSize: 24,
+    fontWeight: '300',
+    textAlign: 'center',
+    marginTop: 8,
   },
 
   cta: {
-    backgroundColor: '#B56576', 
-    paddingVertical: 12,
-    paddingHorizontal: 28,
-    borderRadius: 10,
-    minWidth: 170,
+    marginTop: 52,
+    height: 56,
+   
+    borderRadius: 14,
     alignItems: 'center',
-    shadowColor: '#B56576',
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 5,
+    justifyContent: 'center',
+    backgroundColor: '#B84953',
+    width: width * 0.45,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.18,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+      },
+      android: { elevation: 4 },
+    }),
   },
-  ctaText: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 15,
-  },
+  ctaText: { color: '#fff', fontWeight: '500', fontSize: 24 },
 
-  homeIndicator: {
+ pager: {
+    marginTop: 40,
     width: 120,
-    height: 5,
+    height: 6,
     borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.85)',
-    marginTop: 18,
-    marginBottom: Platform.select({ ios: 6, android: 0 }),
+    backgroundColor: 'rgba(255,255,255,0.35)',
+    overflow: 'hidden',
+  },
+  progress: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#FFFFFF',
   },
 });

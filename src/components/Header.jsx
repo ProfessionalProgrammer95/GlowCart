@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontSize: 26,
-    color: '#9E3A4C', // matches your Figma brand color
+    color: '#9E3A4C', 
     fontWeight: '600',
   },
   iconRow: {

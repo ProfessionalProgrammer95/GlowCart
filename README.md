@@ -1,125 +1,110 @@
-🌸 GlowCart – Beauty E-commerce App
+# GlowCart 🛒
 
-GlowCart is a minimal cosmetic e-commerce mobile application built with React Native CLI. It replicates the provided Figma design while integrating a real product API. The project demonstrates modern mobile app development practices including navigation, API integration, reusable components, and clean UI/UX.
+GlowCart is a demo **React Native E-Commerce Mobile App** built for showcasing to HR/clients.  
+It demonstrates **product listing, product details, wishlist management, and add-to-cart functionality** with a clean UI.
 
-🚀 Features
-🔐 Authentication
+---
 
-Onboarding Screen → Brand logo, tagline, and "Get Started" button.
+## ✨ Features
+- Product listing with search and filters
+- Product details with images, description, ratings & reviews
+- Wishlist ❤️ (toggle heart icon to add/remove)
+- Shopping cart 👜
+- Persistent navigation flow with `React Navigation`
+- Context API for `AuthContext` and `WishlistContext`
+- Dummy API integration (`https://dummyjson.com/products`)
+- Fully working **Release APK** build for client demonstration
 
-Login Screen → Email/password fields, "Forgot password", social login UI.
+---
 
-Register Screen → Full name, email, password, confirm password fields with validation.
+## 🛠️ Tech Stack
+- **React Native** (Expo Bare Workflow not used, pure RN)
+- **React Navigation**
+- **Context API** (for Authentication & Wishlist)
+- **Axios** (API requests)
+- **Vector Icons (Ionicons)**
 
-🛍️ Shopping Flow
+---
 
-Home/Product List Screen
+## 📂 Project Structure
+GlowCart/
+│
+├── App.jsx # Entry point
+│
+├── src/
+│ ├── navigation/ # AppNavigator, Stack/Tabs
+│ ├── context/ # AuthContext, WishlistContext
+│ ├── screens/
+│ │ ├── Home.jsx # Product list screen
+│ │ ├── ProductDetails.jsx # Product details + Wishlist button
+│ │ └── Wishlist.jsx # Wishlist screen
+│ └── components/
+│ └── ProductCard.jsx # Reusable product card
+│
+└── android/ # Native Android project (for APK build)
 
-Fetches products from DummyJSON API.
 
-Search bar with live filtering.
 
-Grid product cards with image, title, price, and wishlist icon.
+🚀 Getting Started
+1. Clone the repo
 
-Bottom Tab Navigation with Home, Offers, Wishlist, Profile.
+git clone https://github.com/yourusername/glowcart.git
+cd glowcart
 
-Product Details Screen
+2. Install dependencies
 
-Large product image with favorite/share.
-
-Title, description, ratings, price + discount.
-
-"Add to Bag" button.
-
-Highlights section (dimensions, warranty, shipping).
-
-Ratings & reviews with mock data.
-
-Profile Screen
-
-Mock user info.
-
-Menu items: Address, Order History, Language, Notifications, Contact Us, Privacy, T&C.
-
-Logout option.
-
-⚙️ Technical Highlights
-
-React Native CLI setup (npx react-native init GlowCart).
-
-React Navigation for stack + bottom tabs.
-
-Axios for API requests.
-
-Context API (AuthContext) for login/register/logout state.
-
-Reusable components: Button, Header, ProductCard.
-
-FlatList for efficient product rendering.
-
-Styled with StyleSheet API and platform-specific shadows.
-
-Works on both Android & iOS.
-
-📱 Screens
-
-Onboarding
-
-Login
-
-Register
-
-Home/Product List
-
-Product Details
-
-Profile
-
-🛠️ Installation & Run
-Prerequisites
-
-Node.js, npm
-
-Android Studio (for emulator)
-
-Xcode (for iOS, Mac only)
-
-Clone & Install
-git clone https://github.com/<your-username>/GlowCart.git
-cd GlowCart
 npm install
 
-Run Metro Bundler
+3. Run Metro bundler
+
 npx react-native start
 
-Run on Android
+
+4. Run on Android Emulator/Device
+
 npx react-native run-android
 
-Run on iOS
-cd ios && pod install && cd ..
-npx react-native run-ios
+🔑 Keystore Setup (for Signed APK)
+Inside android/app/:
 
-📂 Project Structure
-GlowCart/
- └── src/
-     ├── api/          # API calls (products.js)
-     ├── components/   # Reusable UI (Button, Header, ProductCard)
-     ├── context/      # AuthContext.js
-     ├── navigation/   # AppNavigator, HomeTabs
-     └── screens/      # Onboarding, Login, Register, Home, ProductDetails, Profile
+keytool -genkeypair -v -storetype JKS -keystore glowcart-release.keystore -alias glowcart -keyalg RSA -keysize 2048 -validity 10000
+Add signing config in android/app/build.gradle under signingConfigs.
 
-🧑‍💻 Developer Notes
+📦 Building Release APK
+Run from android/ folder:
 
-State Management → Context API used for authentication.
+.\gradlew clean assembleRelease
+The APK will be generated at:
 
-Dynamic Data → Products fetched from DummyJSON API.
+android/app/build/outputs/apk/release/app-release.apk
 
-UI Replication → Colors, fonts, and layout match provided Figma.
+🧪 Test APK on Device
 
-Known Limitations →
+adb install -r android/app/build/outputs/apk/release/app-release.apk
+If package conflict:
 
-No real backend authentication (mocked with context).
+adb uninstall com.glowcart
+adb install -r android/app/build/outputs/apk/release/app-release.apk
 
-Cart & Orders are placeholders.
+📤 Deliverable
+The file to share with HR/client is:
 
-Social login buttons are UI only.
+
+android/app/build/outputs/apk/release/app-release.apk
+
+
+Home Screen
+
+Product Details with Wishlist
+
+Wishlist Screen
+
+Cart Checkout
+
+(Attach screenshots if needed before sending to HR)
+
+👨‍💻 Author
+Rakshitha V
+Role: Frontend Developer Candidate
+
+Purpose: Demo project for HR/Client review

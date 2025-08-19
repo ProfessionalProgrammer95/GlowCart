@@ -12,13 +12,13 @@ import {
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '../context/AuthContext'; // << add
+import { useAuth } from '../context/AuthContext'; 
 
 const colors = {
-  bg: '#FBE9E7',          // pale peach
-  card: '#E8A5AB',        // top rounded card
-  primary: '#B56576',     // button
-  white: '#fff',
+  bg: '#F9E5E3',        
+  card: '#E8A5AB',      
+  primary: '#B5545F',   
+  white: '#FFFFFF',
   textDark: '#554A4A',
   textMid: '#7A6E6E',
   textMute: '#A99A9A',
@@ -32,7 +32,7 @@ export default function Register({ navigation }) {
   const [cpwd, setCpwd] = useState('');
   const [secure1, setSecure1] = useState(true);
   const [secure2, setSecure2] = useState(true);
-  const { register } = useAuth(); // << from context
+  const { register } = useAuth(); 
 
   const valid = useMemo(() => {
     const emailOk = /\S+@\S+\.\S+/.test(email);
@@ -47,21 +47,18 @@ export default function Register({ navigation }) {
       if (pwd.length < 6) return Alert.alert('Password must be at least 6 characters');
       if (pwd !== cpwd) return Alert.alert('Passwords do not match');
     }
-    // mock register (wire to API if needed)
     register(name, email, pwd);
-    navigation.replace('HomeTabs'); // go directly to app, no back to Register
+    navigation.replace('HomeTabs'); 
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.bg} />
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {/* Top header card */}
         <View style={styles.heroCard}>
           <Text style={styles.heroTitle}>Join The Glow!</Text>
         </View>
 
-        {/* Form */}
         <View style={styles.form}>
           <View style={styles.inputWrap}>
             <TextInput
@@ -147,73 +144,99 @@ const SHADOW =
   Platform.OS === 'ios'
     ? {
         shadowColor: '#000',
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.12,
         shadowRadius: 8,
         shadowOffset: { width: 0, height: 4 },
       }
-    : { elevation: 6 };
+    : {
+         elevation: 6 
+        };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
-  scroll: { paddingBottom: 28 },
+  safe: { 
+    flex: 1, 
+    backgroundColor: colors.bg 
+},
+
+  scroll: {
+     minHeight: '100%', 
+     paddingBottom: 24 },
 
   heroCard: {
-    marginTop: 4,
-    marginHorizontal: 16,
+    height:184,
+   
+    marginTop: 6,
     backgroundColor: colors.card,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-    paddingVertical: 34,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: 42,
+    borderBottomRightRadius: 42,
+    paddingVertical: 28,
     alignItems: 'center',
+    zIndex:1000,
     ...SHADOW,
   },
   heroTitle: {
-    color: '#6C3E44',
-    fontSize: 26,
+    color: '#6C3E44',   
+    fontSize: 34,
     fontWeight: '800',
     letterSpacing: 0.4,
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    position:'absolute',
+    top:78,
   },
 
-  form: { marginTop: 28, paddingHorizontal: 18 },
+  form: { 
+    marginTop: 76,
+    paddingHorizontal: 18 },
+
 
   inputWrap: {
     backgroundColor: colors.white,
     borderRadius: 12,
     paddingHorizontal: 14,
-    height: 52,
+    height: 68,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#EFE2E2',
+    borderColor: '#989696',
     ...SHADOW,
   },
   input: {
     flex: 1,
-    color: colors.textDark,
+    color: '#767676',
     fontSize: 15,
     marginRight: 10,
   },
 
   createBtn: {
-    backgroundColor: colors.primary,
-    height: 54,
-    borderRadius: 12,
+    backgroundColor:'#f51a2cff',
+    height: 56,
+    color:'#fffffff',
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 50,
     ...SHADOW,
   },
-  createTxt: { color: colors.white, fontSize: 18, fontWeight: '700' },
+  createTxt: {
+     color: colors.white, 
+     fontSize: 18, 
+     fontWeight: '800' },
+
 
   footer: {
     textAlign: 'center',
-    marginTop: 22,
-    color: colors.textMid,
-    fontSize: 14,
+    marginTop: 95,
+    color: '#6C6C6C',
+    fontSize: 16,
   },
-  login: { color: '#DB3C3C', fontWeight: '700' },
+  login: {
+     color: '#DB3C3C', 
+     fontWeight: '700'
+     },
 });

@@ -1,5 +1,13 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Platform,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const colors = {
@@ -7,10 +15,19 @@ const colors = {
   text: '#3E3A3A',
   sub: '#8B7E7E',
   border: '#F1E2E2',
-  bg: '#FFF7F6',
+  bg: '#FFEDE8',
 };
 
-export default function ProductCard({ item, onPress }) {
+export default function ProductCard({ item, onPress, onToggleFavorite }) {
+
+  const [liked, setLiked] = useState(false);
+
+  const toggleLike = () => {
+    const next = !liked;
+    setLiked(next);
+    onToggleFavorite?.(item, next); 
+  };
+
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onPress}>
       <View style={styles.imageWrap}>
@@ -22,9 +39,20 @@ export default function ProductCard({ item, onPress }) {
       </Text>
       <Text style={styles.price}>${Number(item.price).toFixed(2)}</Text>
 
-      <TouchableOpacity style={styles.heartBtn}>
-        <Ionicons name="heart-outline" size={20} color="#8C8C8C" />
-      </TouchableOpacity>
+    
+      <Pressable
+        onPress={toggleLike}
+        style={({ pressed }) => [
+          styles.heartBtn,
+          pressed && { transform: [{ scale: 0.92 }], opacity: 0.8 }, 
+        ]}
+      >
+        <Ionicons
+          name={liked ? 'heart' : 'heart-outline'}
+          size={20}
+          color={liked ? '#E63946' : '#8C8C8C'}
+        />
+      </Pressable>
     </TouchableOpacity>
   );
 }
@@ -52,7 +80,7 @@ const styles = StyleSheet.create({
     ...SHADOW,
   },
   imageWrap: {
-    backgroundColor: colors.bg,
+    backgroundColor: '#FADCDC',
     borderRadius: 12,
     overflow: 'hidden',
     height: 150,
@@ -66,14 +94,15 @@ const styles = StyleSheet.create({
   heartBtn: {
     position: 'absolute',
     right: 12,
-    bottom: 12,
-    width: 32,
-    height: 32,
+    bottom: 6,
+    width: 25,
+    height: 25,
     borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: colors.border,
+    ...SHADOW,
   },
 });

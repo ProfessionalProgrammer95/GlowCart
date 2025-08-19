@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useWishlist } from '../context/WishlistContext';
 import {
   View,
   Text,
@@ -16,7 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProductCard from '../components/ProductCard';
 
 const colors = {
-  bg: '#F6E7E3',        // light blush background
+  bg: '#F6E7E3',       
   white: '#fff',
   text: '#3E3A3A',
   sub: '#8B7E7E',
@@ -26,22 +27,33 @@ const colors = {
 };
 
 export default function Home({ navigation, title = 'Viorra', onBellPress, onCartPress }) {
+    const { toggle, has } = useWishlist();
   const [all, setAll] = useState([]);
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const load = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get('https://dummyjson.com/products?limit=100');
-      setAll(res.data?.products ?? []);
-    } catch (e) {
-      console.error('Products load error', e?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  const API = 'https://dummyjson.com/products?limit=100';
+const load = async () => {
+  try {
+    setLoading(true);
+    const res = await axios.get(API, { timeout: 10000 });
+    setAll(res.data?.products ?? []);
+  } catch (e) {
+    const status = e?.response?.status;
+    const data = e?.response?.data;
+    console.error('Products load error',
+      e?.message,
+      status ? `status=${status}` : '',
+      data ? `data=${JSON.stringify(data).slice(0,200)}` : '',
+    );
+
+    setAll([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     load();
@@ -53,7 +65,6 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
     setRefreshing(false);
   }, []);
 
-  // cosmetic-like filter (optional)
   const cosmeticKeys = ['beauty', 'fragrance', 'skin', 'lip', 'lash', 'eyeshadow', 'mask', 'cream', 'makeup', 'mascara'];
   const data = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -61,7 +72,7 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
       p =>
         cosmeticKeys.some(k =>
           (p.title + ' ' + p.description + ' ' + (p.category || '')).toLowerCase().includes(k),
-        ) || true, // keep all to avoid empty state; adjust if you want strict
+        ) || true,
     );
     if (term) {
       list = list.filter(
@@ -75,7 +86,8 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
 
   const header = (
     <>
-      {/* Top bar */}
+
+      <View style={styles.topBar1}>
        <View style={styles.topBar}>
       <Text style={styles.brand}>{title}</Text>
       <View style={styles.topIcons}>
@@ -85,11 +97,14 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
         <TouchableOpacity style={styles.iconBtn} onPress={onCartPress}>
           <Ionicons name="bag-outline" size={22} color="#2E2A2A" />
         </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.navigate('Wishlist')}>
+    <Ionicons name="heart-outline" size={22} color="#2E2A2A" />
+ </TouchableOpacity> */}
       </View>
-    </View>
-
       {/* Search */}
-      <View style={styles.searchWrap}>
+     
+    </View>
+     <View style={styles.searchWrap}>
         <Ionicons name="search-outline" size={20} color={colors.sub} />
         <TextInput
           placeholder="Search for all products"
@@ -101,8 +116,9 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
         />
         <Ionicons name="mic-outline" size={20} color={colors.sub} />
       </View>
+    </View>
 
-      {/* Section header */}
+
       <View style={styles.sectionRow}>
         <View>
           <Text style={styles.sectionTitle}>Best Products</Text>
@@ -141,12 +157,18 @@ export default function Home({ navigation, title = 'Viorra', onBellPress, onCart
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          renderItem={({ item }) => (
-            <ProductCard
-              item={item}
-              onPress={() => navigation.navigate('ProductDetails', { product: item })}
-            />
-          )}
+         renderItem={({ item }) => (
+  <ProductCard
+    item={item}
+    onPress={() =>
+      navigation.navigate('ProductDetails', { product: item })
+    }
+    onToggleFavorite={(product, next) => {
+      toggle(product);             
+      if (next) navigation.navigate('Wishlist');
+    }}
+  />
+)}
         />
       </View>
     </SafeAreaView>
@@ -158,48 +180,65 @@ const SHADOW = Platform.select({
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { 
+        width: 0,
+         height: 4 
+        },
   },
   android: { elevation: 3 },
 });
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
-  container: { flex: 1 },
+  safe: { 
+    flex: 1, 
+    backgroundColor: colors.bg
+ },
+  container: { 
+    flex: 1
+ },
 
-  topBar: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 10,
+  topBar1:{
+     height:170,
+    paddingVertical: 16,
     backgroundColor: colors.white,
+     paddingTop: 50,
+    paddingBottom: 5,
+     borderBottomWidth: 1,
+     borderColor: colors.border,
+     paddingHorizontal:10,
+  },
+  topBar: {
+    
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderColor: colors.border,
+   
+    
   },
   brand: {
     fontSize: 26,
-    color: '#9E3A4C', // close to the logo color
+    color: '#9E3A4C', 
     fontWeight: '600',
+    fontFamily:'Italiana',
   },
-  topIcons: { flexDirection: 'row', gap: 10 },
+  topIcons: { 
+    flexDirection: 'row', 
+    gap: 10 
+},
   iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.border,
+
+    paddingHorizontal:10,
+   
     ...SHADOW,
   },
 
   searchWrap: {
     backgroundColor: colors.white,
     marginHorizontal: 16,
-    marginTop: 12,
+    marginTop: 23,
     borderRadius: 26,
     height: 46,
     paddingHorizontal: 14,
@@ -210,38 +249,49 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     ...SHADOW,
   },
-  searchInput: { flex: 1, fontSize: 14, color: colors.text },
+  searchInput: { 
+    flex: 1,
+     fontSize: 14, 
+     color: colors.text 
+    },
 
   sectionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     marginHorizontal: 16,
+    paddingVertical:10,
     marginTop: 18,
     marginBottom: 4,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '700',
     color: colors.text,
+   
   },
   sectionSub: {
-    fontSize: 12,
+    fontSize: 16,
     color: colors.sub,
     marginTop: 2,
+    color:'#636363',
   },
   filterChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: colors.chip,
-    paddingHorizontal: 12,
-    height: 32,
+    gap: 15,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 18,
+    height: 39,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  filterTxt: { color: colors.primary, fontWeight: '700', fontSize: 12 },
+  filterTxt: { 
+    color: '#000', 
+    fontWeight: '700', 
+    fontSize: 12 
+},
 
   col: { paddingHorizontal: 8 },
 });
