@@ -47,21 +47,16 @@ GlowCart/
 
 🚀 Getting Started
 1. Clone the repo
-
-git clone https://github.com/yourusername/glowcart.git
+git clone https://github.com/ProfessionalProgrammer95/GlowCart.git
 cd glowcart
 
 2. Install dependencies
-
 npm install
 
 3. Run Metro bundler
-
 npx react-native start
 
-
 4. Run on Android Emulator/Device
-
 npx react-native run-android
 
 🔑 Keystore Setup (for Signed APK)
@@ -72,14 +67,12 @@ Add signing config in android/app/build.gradle under signingConfigs.
 
 📦 Building Release APK
 Run from android/ folder:
-
 .\gradlew clean assembleRelease
-The APK will be generated at:
 
+The APK will be generated at:
 android/app/build/outputs/apk/release/app-release.apk
 
 🧪 Test APK on Device
-
 adb install -r android/app/build/outputs/apk/release/app-release.apk
 If package conflict:
 
@@ -87,21 +80,14 @@ adb uninstall com.glowcart
 adb install -r android/app/build/outputs/apk/release/app-release.apk
 
 📤 Deliverable
-The file to share with HR/client is:
-
-
+The file to share is:
 android/app/build/outputs/apk/release/app-release.apk
 
 
 Home Screen
-
 Product Details with Wishlist
-
 Wishlist Screen
-
 Cart Checkout
-
-(Attach screenshots if needed before sending to HR)
 
 👨‍💻 Author
 Rakshitha V
